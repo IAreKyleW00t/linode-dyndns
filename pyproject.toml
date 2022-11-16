@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "linode_dyndns"
+description = "A Python tool for dynamically updating Linode Domain Records"
+version = "1.0.0"
+authors = [
+    { name = "Kyle Colantonio", email = "k@yle.sh" }
+]
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+keywords = [
+  "automation",
+  "linode",
+  "dyndns",
+  "dns",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Systems Administration",
+    "Topic :: Utilities",
+]
+dependencies = [
+    "click>=8.1",
+    "requests>=2.28",
+]
+
+[project.scripts]
+linode_dyndns = "linode_dyndns:main"
