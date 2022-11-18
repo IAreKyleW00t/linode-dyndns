@@ -22,10 +22,11 @@ Options:
   -i, --interval INTEGER  Interval to recheck IP and update Records at (in
                           minutes).  [default: 0]
   -6, --ipv6              Also create a AAAA record (if possible).
-  --ipv4-url TEXT         URL to use for getting public IPv4 address
+  --ipv4-url TEXT         URL to use for getting public IPv4 address.
                           [default: https://ipv4.icanhazip.com]
-  --ipv6-url TEXT         URL to use for getting public IPv6 address
+  --ipv6-url TEXT         URL to use for getting public IPv6 address.
                           [default: https://ipv6.icanhazip.com]
+  --no-color              Disables color output.
   --help                  Show this message and exit.
 ```
 
@@ -44,7 +45,6 @@ docker run --rm -it --name linode_dyndns \
 
 | Name       | Flag         |
 | ---------- | ------------ |
-| `VERBOSE`  | `--verbose`  |
 | `DOMAIN`   | `--domain`   |
 | `HOST`     | `--host`     |
 | `TOKEN`    | `--token`    |
@@ -52,6 +52,7 @@ docker run --rm -it --name linode_dyndns \
 | `IPV6`     | `--ipv6`     |
 | `IPV4_URL` | `--ipv4-url` |
 | `IPV6_URL` | `--ipv6-url` |
+| `NO_COLOR` | `--no-color` |
 
 ## Local development
 
