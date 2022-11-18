@@ -1,6 +1,6 @@
 # Linode DynDNS
 
-A Python tool for dynamically updating Linode Domain Records with your current, inspired by [nvllsvm/linode-dynamic-dns](https://github.com/nvllsvm/linode-dynamic-dns) but now utilizes the official [linode_api4](https://github.com/linode/linode_api4-python) for Python.
+A Python tool for dynamically updating Linode Domain Records with your current IP address. Inspired by [nvllsvm/linode-dynamic-dns](https://github.com/nvllsvm/linode-dynamic-dns) but now utilizes the official [linode_api4](https://github.com/linode/linode_api4-python) package for Python.
 
 ## Usage
 
