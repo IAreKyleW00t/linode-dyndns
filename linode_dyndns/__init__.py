@@ -171,7 +171,7 @@ def do_update(
     envvar="IPV6",
     is_flag=True,
     default=False,
-    help="Also create a AAAA (if possible).",
+    help="Also create a AAAA record (if possible).",
 )
 @click.option(
     "--ipv4-url",

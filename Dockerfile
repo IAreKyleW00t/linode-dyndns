@@ -15,7 +15,7 @@ RUN . /opt/venv/bin/activate \
   && pip install --no-cache-dir .
 
 # main image
-FROM python:3-slim AS app
+FROM python:3-alpine AS app
 COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 ENTRYPOINT ["/opt/venv/bin/linode_dyndns"]

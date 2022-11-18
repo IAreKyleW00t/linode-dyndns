@@ -1,6 +1,6 @@
 # Linode DynDNS
 
-A Python tool for dynamically updating Linode Domain Records with your current, inspired by [nvllsvm/linode-dynamic-dns](https://github.com/nvllsvm/linode-dynamic-dns) but now utilizes the official [linode_api4](https://github.com/linode/linode_api4-python) for Python... and built regularly.
+A Python tool for dynamically updating Linode Domain Records with your current, inspired by [nvllsvm/linode-dynamic-dns](https://github.com/nvllsvm/linode-dynamic-dns) but now utilizes the official [linode_api4](https://github.com/linode/linode_api4-python) for Python.
 
 ## Usage
 
@@ -21,7 +21,7 @@ Options:
   -t, --token TEXT        Linode API token  [required]
   -i, --interval INTEGER  Interval to recheck IP and update Records at (in
                           minutes).  [default: 0]
-  -6, --ipv6              Also create a AAAA (if possible).
+  -6, --ipv6              Also create a AAAA record (if possible).
   --ipv4-url TEXT         URL to use for getting public IPv4 address
                           [default: https://ipv4.icanhazip.com]
   --ipv6-url TEXT         URL to use for getting public IPv6 address
@@ -88,7 +88,7 @@ docker build -t linode-dyndns .
 
 ## License
 
-See [LICENSE](LICENSE).
+See [LICENSE](https://github.com/IAreKyleW00t/linode-dyndns/LICENSE).
 
 ## Contributing
 
