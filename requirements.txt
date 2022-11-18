@@ -1,4 +1,2 @@
 -e .
 black
-click>=8.1
-requests>=2
