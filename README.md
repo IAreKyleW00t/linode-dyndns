@@ -75,10 +75,10 @@ pip install -r requirements.txt
 
 ## Building
 
-You can build it normally via pip
+You can build the package yourself via the [build](https://pypi.org/project/build/) module (included in `requirements.txt`)
 
 ```sh
-pip install .
+python -m build --sdist --wheel --outdir dist/ .
 ```
 
 or build the Docker image instead
