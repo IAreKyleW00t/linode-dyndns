@@ -4,6 +4,12 @@ A Python tool for dynamically updating Linode Domain Records with your current, 
 
 ## Usage
 
+Install the Python package
+
+```sh
+pip install linode-dyndns
+```
+
 Full usage and defaults can be found using the `--help` flag. Each option has a matching env variable associated with it which can be set instead of setting flags on the cli tool itself, see the [Environment variables](#Environment-variables) section.
 
 ```
