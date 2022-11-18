@@ -88,7 +88,7 @@ docker build -t linode-dyndns .
 
 ## License
 
-See [LICENSE](https://github.com/IAreKyleW00t/linode-dyndns/LICENSE).
+See [LICENSE](https://github.com/IAreKyleW00t/linode-dyndns/blob/main/LICENSE).
 
 ## Contributing
 
