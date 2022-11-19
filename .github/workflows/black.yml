@@ -3,10 +3,12 @@ name: black
 on:
   push:
     branches: ["main"]
+    paths:
+      - "**/*.py"
   pull_request:
     branches: ["main"]
-    paths-ignore:
-      - "**/*.md"
+    paths:
+      - "**/*.py"
 
 jobs:
   black:

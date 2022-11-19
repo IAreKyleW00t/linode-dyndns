@@ -3,10 +3,16 @@ name: CodeQL
 on:
   push:
     branches: ["main"]
+    paths:
+      - requirements.txt
+      - pyproject.toml
+      - "**/*.py"
   pull_request:
     branches: ["main"]
-    paths-ignore:
-      - "**/*.md"
+    paths:
+      - requirements.txt
+      - pyproject.toml
+      - "**/*.py"
 
 jobs:
   analyze:
