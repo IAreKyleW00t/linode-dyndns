@@ -10,7 +10,6 @@ from linode_api4 import LinodeClient, Domain, DomainRecord
 from linode_dyndns.version import version as __version__
 
 COMPILED = Path(__file__).suffix in (".pyd", ".so")
-NO_COLOR = True
 
 
 def get_ip(url: str) -> str:
@@ -18,14 +17,6 @@ def get_ip(url: str) -> str:
         return requests.get(url).text.strip()
     except:  # Something went wrong!
         return None
-
-
-def log(message: str, **kwargs) -> None:
-    if NO_COLOR:
-        err = kwargs.get("err", None)  # pass through error flag
-        click.echo(message, err=err)
-    else:
-        click.secho(message, **kwargs)
 
 
 def do_update(
@@ -39,34 +30,23 @@ def do_update(
     client = LinodeClient(token)
 
     # Get public IPs
-    log("Fetching public IPs...", fg="bright_white")
     ipv4_ip = get_ip(ipv4_url)
-    log(f"  IPv4 IP: {ipv4_ip}")
+    click.echo(f"IPv4 IP: {ipv4_ip}")
     if ipv6:
         ipv6_ip = get_ip(ipv6_url)
-        log(f"  IPv6 IP: {ipv6_ip}")
+        click.echo(f"IPv6 IP: {ipv6_ip}")
 
     # Get domain information from account
-    log(f"Fetching domain information...", fg="bright_white", nl=False)
     domains = client.domains(Domain.domain == domain)
     if domains.total_items == 0:
-        log(" ERROR!", fg="bright_red")
-        log(
-            f"Failed to find '{domain}' on account",
-            fg="bright_red",
-            bold=True,
-            err=True,
-        )
+        click.echo(f"Failed to find '{domain}' on account", err=True)
         exit(1)
     try:
         # Get the domain and ensure there is one (and only one) result
         domain = domains.only()
     except ValueError:
-        log(" ERROR!", fg="bright_red")
-        log(
+        click.echo(
             f"Unexpectedly found multiple domain entries for '{domain}' on account",
-            fg="bright_red",
-            bold=True,
             err=True,
         )
         exit(2)
@@ -75,7 +55,6 @@ def do_update(
     records = [
         DomainRecord(client, id=r.id, parent_id=domain.id) for r in domain.records
     ]
-    log(" Done!", fg="bright_white")
 
     # Create/Update IPv4 record
     if ipv4_ip:
@@ -87,17 +66,14 @@ def do_update(
                 old_ip = ipv4_record.target
                 ipv4_record.target = ipv4_ip
                 ipv4_record.save()
-                log(
-                    f"Updated A record '{host}' from '{old_ip}' to '{ipv4_ip}'",
-                    fg="bright_green",
-                )
+                click.echo(f"Updated A record '{host}' from '{old_ip}' to '{ipv4_ip}'")
             else:
-                log(f"A record '{host}' already set to '{ipv4_ip}'", fg="bright_green")
+                click.echo(f"A record '{host}' already set to '{ipv4_ip}'")
         else:  # Not found
             ipv4_record = domain.record_create("A", name=host, target=ipv4_ip)
-            log(f"Created new A record '{host}' with '{ipv4_ip}'", fg="bright_green")
+            click.echo(f"Created new A record '{host}' with '{ipv4_ip}'")
     else:
-        log("Skipped A record -- no public IPv4 address found", fg="bright_red")
+        click.echo("Skipped A record -- no public IPv4 address found", err=True)
 
     # Create/Update IPv6 record
     if ipv6 and ipv6_ip:
@@ -109,23 +85,16 @@ def do_update(
                 old_ip = ipv6_record.target
                 ipv6_record.target = ipv6_ip
                 ipv6_record.save()
-                log(
-                    f"Updated AAAA record '{host}' from '{old_ip}' to '{ipv6_ip}'",
-                    fg="bright_green",
+                click.echo(
+                    f"Updated AAAA record '{host}' from '{old_ip}' to '{ipv6_ip}'"
                 )
             else:
-                log(
-                    f"AAAA record '{host}' already set to '{ipv6_ip}'",
-                    fg="bright_green",
-                )
+                click.echo(f"AAAA record '{host}' already set to '{ipv6_ip}'")
         else:  # Not found
             ipv6_record = domain.record_create("A", name=host, target=ipv6_ip)
-            log(
-                f"Created new AAAA record '{host}' with '{ipv6_ip}'",
-                fg="bright_green",
-            )
+            click.echo(f"Created new AAAA record '{host}' with '{ipv6_ip}'")
     elif ipv6 and not ipv6_ip:
-        log("Skipped AAAA record -- no public IPv6 address found", fg="bright_red")
+        click.echo("Skipped AAAA record -- no public IPv6 address found", err=True)
 
 
 @click.command(context_settings={"show_default": True})
@@ -191,14 +160,6 @@ def do_update(
     default="https://ipv6.icanhazip.com",
     help="URL to use for getting public IPv6 address.",
 )
-@click.option(
-    "--no-color",
-    envvar="NO_COLOR",
-    type=bool,
-    is_flag=True,
-    default=False,
-    help="Disables color output.",
-)
 @click.pass_context
 def main(
     ctx: click.Context,
@@ -209,17 +170,14 @@ def main(
     ipv6: bool,
     ipv4_url: str,
     ipv6_url: str,
-    no_color: bool,
 ) -> None:
     """A Python tool for dynamically updating Linode Domain Records with your current IP."""
-    global NO_COLOR
-    NO_COLOR = no_color
     if interval > 0:
         while True:
             do_update(domain, host, token, ipv6, ipv4_url, ipv6_url)
-            log(f"Sleeping for {interval} min...")
+            click.echo(f"Sleeping for {interval} min...")
             time.sleep(interval * 60)
-            log("-" * 80)
+            click.echo("-" * 80)
     else:
         do_update(domain, host, token, ipv6, ipv4_url, ipv6_url)
 

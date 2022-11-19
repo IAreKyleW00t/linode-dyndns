@@ -54,7 +54,6 @@ docker run --rm -it --name linode_dyndns \
 | `IPV6`     | `--ipv6`     |
 | `IPV4_URL` | `--ipv4-url` |
 | `IPV6_URL` | `--ipv6-url` |
-| `NO_COLOR` | `--no-color` |
 
 ## Local development
 
