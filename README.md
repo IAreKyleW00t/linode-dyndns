@@ -6,15 +6,13 @@ Available on: [GitHub](https://github.com/IAreKyleW00t/linode-dyndns) | [DockerH
 
 ## Usage
 
-Install the Python package
-
-```sh
-pip install linode-dyndns
-```
-
 Full usage and defaults can be found using the `--help` flag. Each option has a matching env variable associated with it which can be set instead of setting flags on the cli tool itself, see the [Environment variables](#Environment-variables) section.
 
+If for some reason the tool cannot get your IP during a run, it will skip it and retry during the next interval. This is to account for any weird network issues on long-running instances.
+
 ```
+pip install linode-dyndns
+$ linode_dyndns --help
 Usage: linode_dyndns [OPTIONS]
 
   A Python tool for dynamically updating Linode Domain Records with your
@@ -29,13 +27,15 @@ Options:
   -t, --token TEXT        Linode API token  [required]
   -i, --interval INTEGER  Interval to recheck IP and update Records at (in
                           minutes).  [default: 0]
-  -6, --ipv6              Also create a AAAA record (if possible).
+  -6, --ipv6              Also grab public IPv6 address and create/update AAAA
+                          record.
   --ipv4-url TEXT         URL to use for getting public IPv4 address.
                           [default: https://ipv4.icanhazip.com]
   --ipv6-url TEXT         URL to use for getting public IPv6 address.
                           [default: https://ipv6.icanhazip.com]
   --no-color              Disables color output.
   --help                  Show this message and exit.
+
 ```
 
 You can also run it via Docker for ease-of-use
@@ -95,10 +95,18 @@ or build the Docker image instead
 docker build -t linode-dyndns .
 ```
 
-## License
-
-See [LICENSE](https://github.com/IAreKyleW00t/linode-dyndns/blob/main/LICENSE).
-
 ## Contributing
 
 Feel free to contribute and make things better by opening an [Issue](https://github.com/IAreKyleW00t/linode-dyndns/issues) or [Pull Requests](https://github.com/IAreKyleW00t/linode-dyndns/pulls).
+
+### Code Styling
+
+This tool is painted [black](https://github.com/psf/black) and has a corresponding [workflow](https://github.com/IAreKyleW00t/linode-dyndns/actions/workflows/black.yml) to enforce it. If you plan to contribute anything, please ensure you run `black` against your files first (included in `requirements.txt`).
+
+```sh
+black .
+```
+
+## License
+
+See [LICENSE](https://github.com/IAreKyleW00t/linode-dyndns/blob/main/LICENSE).

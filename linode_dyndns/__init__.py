@@ -39,32 +39,30 @@ def do_update(
     client = LinodeClient(token)
 
     # Get public IPs
-    log("Gathering public IPs...", fg="bright_white")
+    log("Fetching public IPs...", fg="bright_white")
     ipv4_ip = get_ip(ipv4_url)
-    log(f"IPv4 IP: {ipv4_ip}")
+    log(f"  IPv4 IP: {ipv4_ip}")
     if ipv6:
         ipv6_ip = get_ip(ipv6_url)
-        log(f"IPv6 IP: {ipv6_ip}")
-
-    if not ipv4_ip:
-        log("Failed to find public IPv4 address", fg="red", err=True)
-        exit(1)
+        log(f"  IPv6 IP: {ipv6_ip}")
 
     # Get domain information from account
-    log(f"Fetching domain from account...", fg="bright_white")
+    log(f"Fetching domain information...", fg="bright_white", nl=False)
     domains = client.domains(Domain.domain == domain)
     if domains.total_items == 0:
+        log(" ERROR!", fg="bright_red")
         log(
             f"Failed to find '{domain}' on account",
             fg="bright_red",
             bold=True,
             err=True,
         )
-        exit(2)
+        exit(1)
     try:
         # Get the domain and ensure there is one (and only one) result
         domain = domains.only()
     except ValueError:
+        log(" ERROR!", fg="bright_red")
         log(
             f"Unexpectedly found multiple domain entries for '{domain}' on account",
             fg="bright_red",
@@ -72,31 +70,34 @@ def do_update(
             err=True,
         )
         exit(2)
-    log(f"Found domain '{domain.domain}'")
 
     # Get all records in domain
     records = [
         DomainRecord(client, id=r.id, parent_id=domain.id) for r in domain.records
     ]
+    log(" Done!", fg="bright_white")
 
     # Create/Update IPv4 record
-    ipv4_record = next(
-        iter(r for r in records if r.type == "A" and r.name == host), None
-    )
-    if ipv4_record:  # Found
-        if ipv4_record.target != ipv4_ip:
-            old_ip = ipv4_record.target
-            ipv4_record.target = ipv4_ip
-            ipv4_record.save()
-            log(
-                f"Updated A record '{host}' from '{old_ip}' to '{ipv4_ip}'",
-                fg="bright_green",
-            )
-        else:
-            log(f"A record '{host}' already set to '{ipv4_ip}'", fg="bright_green")
-    else:  # Not found
-        ipv4_record = domain.record_create("A", name=host, target=ipv4_ip)
-        log(f"Created new A record '{host}' with '{ipv4_ip}'", fg="bright_green")
+    if ipv4_ip:
+        ipv4_record = next(
+            iter(r for r in records if r.type == "A" and r.name == host), None
+        )
+        if ipv4_record:  # Found
+            if ipv4_record.target != ipv4_ip:
+                old_ip = ipv4_record.target
+                ipv4_record.target = ipv4_ip
+                ipv4_record.save()
+                log(
+                    f"Updated A record '{host}' from '{old_ip}' to '{ipv4_ip}'",
+                    fg="bright_green",
+                )
+            else:
+                log(f"A record '{host}' already set to '{ipv4_ip}'", fg="bright_green")
+        else:  # Not found
+            ipv4_record = domain.record_create("A", name=host, target=ipv4_ip)
+            log(f"Created new A record '{host}' with '{ipv4_ip}'", fg="bright_green")
+    else:
+        log("Skipped A record -- no public IPv4 address found", fg="bright_red")
 
     # Create/Update IPv6 record
     if ipv6 and ipv6_ip:
@@ -174,7 +175,7 @@ def do_update(
     type=bool,
     is_flag=True,
     default=False,
-    help="Also create a AAAA record (if possible).",
+    help="Also grab public IPv6 address and create/update AAAA record.",
 )
 @click.option(
     "--ipv4-url",
@@ -216,7 +217,7 @@ def main(
     if interval > 0:
         while True:
             do_update(domain, host, token, ipv6, ipv4_url, ipv6_url)
-            log(f"Waiting {interval} min before next update...")
+            log(f"Sleeping for {interval} min...")
             time.sleep(interval * 60)
             log("-" * 80)
     else:
