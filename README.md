@@ -4,41 +4,35 @@ A Python tool for dynamically updating Linode Domain Records with your current I
 
 Available on: [GitHub](https://github.com/IAreKyleW00t/linode-dyndns) | [DockerHub](https://hub.docker.com/r/iarekylew00t/linode-dyndns) | [PyPi](https://pypi.org/project/linode-dyndns/)
 
+## Installation
+
+You can install the tool by running
+
+```sh
+pip install linode-dyndns
+```
+
+Alternatively, you can use docker
+
+```sh
+docker pull iarekylew00t/linode-dyndns
+```
+
 ## Usage
 
 Full usage and defaults can be found using the `--help` flag. Each option has a matching env variable associated with it which can be set instead of setting flags on the cli tool itself, see the [Environment variables](#Environment-variables) section.
 
-If for some reason the tool cannot get your IP during a run, it will skip it and retry during the next interval. This is to account for any weird network issues on long-running instances.
+When running the tool in a loop (`--interval` flag), if for some reason the tool cannot get your IP during a run, it will skip it and retry during the next interval.
 
-```
-pip install linode-dyndns
-$ linode_dyndns --help
-Usage: linode_dyndns [OPTIONS]
-
-  A Python tool for dynamically updating Linode Domain Records with your
-  current IP.
-
-Options:
-  --version               Show the version and exit.
-  -d, --domain TEXT       Domain name as listed in your Linode Account (eg:
-                          example.com).  [required]
-  -h, --host TEXT         Host to create/update within the specified Domain
-                          (eg: mylab).  [required]
-  -t, --token TEXT        Linode API token  [required]
-  -i, --interval INTEGER  Interval to recheck IP and update Records at (in
-                          minutes).  [default: 0]
-  -6, --ipv6              Also grab public IPv6 address and create/update AAAA
-                          record.
-  --ipv4-url TEXT         URL to use for getting public IPv4 address.
-                          [default: https://ipv4.icanhazip.com]
-  --ipv6-url TEXT         URL to use for getting public IPv6 address.
-                          [default: https://ipv6.icanhazip.com]
-  --no-color              Disables color output.
-  --help                  Show this message and exit.
-
+```sh
+linode_dyndns \
+  --domain exmaple.com \
+  --host mylab \
+  --token abc...789 \
+  --interval 60
 ```
 
-You can also run it via Docker for ease-of-use
+or, running it via Docker (which also supports passing flags)
 
 ```sh
 docker run --rm -it --name linode_dyndns \
