@@ -51,9 +51,11 @@ def do_update(
         )
         exit(2)
 
-    # Get all records in domain
+    # Get records in domain specific to our host
     records = [
-        DomainRecord(client, id=r.id, parent_id=domain.id) for r in domain.records
+        DomainRecord(client, id=r.id, parent_id=domain.id)
+        for r in domain.records
+        if (r.type == "A" or r.type == "AAAA") and r.name == host
     ]
 
     # Create/Update IPv4 record
