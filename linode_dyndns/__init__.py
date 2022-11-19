@@ -216,7 +216,7 @@ def main(
     if interval > 0:
         while True:
             do_update(domain, host, token, ipv6, ipv4_url, ipv6_url)
-            log(f"Waiting {interval}min before next update...")
+            log(f"Waiting {interval} min before next update...")
             time.sleep(interval * 60)
             log("-" * 80)
     else:
