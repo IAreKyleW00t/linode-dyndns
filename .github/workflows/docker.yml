@@ -26,7 +26,7 @@ jobs:
 
       - name: Generate Docker metadata
         id: meta
-        uses: docker/metadata-action@v3
+        uses: docker/metadata-action@v4
         with:
           images: |
             docker.io/${{ env.GIT_REPO_LC }}
