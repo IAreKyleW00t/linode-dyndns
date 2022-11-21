@@ -176,12 +176,18 @@ def main(
     """A Python tool for dynamically updating Linode Domain Records with your current IP."""
     if interval > 0:
         while True:
-            do_update(domain, host, token, ipv6, ipv4_url, ipv6_url)
+            try:
+                do_update(domain, host, token, ipv6, ipv4_url, ipv6_url)
+            except Exception as e:
+                click.echo(e)
             click.echo(f"Sleeping for {interval} min...")
             time.sleep(interval * 60)
             click.echo("-" * 80)
     else:
-        do_update(domain, host, token, ipv6, ipv4_url, ipv6_url)
+        try:
+            do_update(domain, host, token, ipv6, ipv4_url, ipv6_url)
+        except Exception as e:
+            click.echo(e)
 
 
 if __name__ == "__main__":
