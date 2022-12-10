@@ -1,6 +1,7 @@
 import platform
 import os
 import time
+from typing import List
 from pathlib import Path
 
 import click
@@ -55,46 +56,48 @@ def do_update(
     records = [
         DomainRecord(client, id=r.id, parent_id=domain.id)
         for r in domain.records
-        if (r.type == "A" or r.type == "AAAA") and r.name == host
+        if (r.type == "A" or r.type == "AAAA") and r.name in host
     ]
 
     # Create/Update IPv4 record
     if ipv4_ip:
-        ipv4_record = next(
-            iter(r for r in records if r.type == "A" and r.name == host), None
-        )
-        if ipv4_record:  # Found
-            if ipv4_record.target != ipv4_ip:
-                old_ip = ipv4_record.target
-                ipv4_record.target = ipv4_ip
-                ipv4_record.save()
-                click.echo(f"Updated A record '{host}' from '{old_ip}' to '{ipv4_ip}'")
-            else:
-                click.echo(f"A record '{host}' already set to '{ipv4_ip}'")
-        else:  # Not found
-            ipv4_record = domain.record_create("A", name=host, target=ipv4_ip)
-            click.echo(f"Created new A record '{host}' with '{ipv4_ip}'")
+        for h in host:
+            ipv4_record = next(
+                iter(r for r in records if r.type == "A" and r.name == h), None
+            )
+            if ipv4_record:  # Found
+                if ipv4_record.target != ipv4_ip:
+                    old_ip = ipv4_record.target
+                    ipv4_record.target = ipv4_ip
+                    ipv4_record.save()
+                    click.echo(f"Updated A record '{h}' from '{old_ip}' to '{ipv4_ip}'")
+                else:
+                    click.echo(f"A record '{h}' already set to '{ipv4_ip}'")
+            else:  # Not found
+                ipv4_record = domain.record_create("A", name=h, target=ipv4_ip)
+                click.echo(f"Created new A record '{h}' with '{ipv4_ip}'")
     else:
         click.echo("Skipped A record -- no public IPv4 address found", err=True)
 
     # Create/Update IPv6 record
     if ipv6 and ipv6_ip:
-        ipv6_record = next(
-            iter(r for r in records if r.type == "AAAA" and r.name == host), None
-        )
-        if ipv6_record:  # Found
-            if ipv6_record.target != ipv6_ip:
-                old_ip = ipv6_record.target
-                ipv6_record.target = ipv6_ip
-                ipv6_record.save()
-                click.echo(
-                    f"Updated AAAA record '{host}' from '{old_ip}' to '{ipv6_ip}'"
-                )
-            else:
-                click.echo(f"AAAA record '{host}' already set to '{ipv6_ip}'")
-        else:  # Not found
-            ipv6_record = domain.record_create("A", name=host, target=ipv6_ip)
-            click.echo(f"Created new AAAA record '{host}' with '{ipv6_ip}'")
+        for h in host:
+            ipv6_record = next(
+                iter(r for r in records if r.type == "AAAA" and r.name == h), None
+            )
+            if ipv6_record:  # Found
+                if ipv6_record.target != ipv6_ip:
+                    old_ip = ipv6_record.target
+                    ipv6_record.target = ipv6_ip
+                    ipv6_record.save()
+                    click.echo(
+                        f"Updated AAAA record '{h}' from '{old_ip}' to '{ipv6_ip}'"
+                    )
+                else:
+                    click.echo(f"AAAA record '{h}' already set to '{ipv6_ip}'")
+            else:  # Not found
+                ipv6_record = domain.record_create("A", name=h, target=ipv6_ip)
+                click.echo(f"Created new AAAA record '{h}' with '{ipv6_ip}'")
     elif ipv6 and not ipv6_ip:
         click.echo("Skipped AAAA record -- no public IPv6 address found", err=True)
 
@@ -121,7 +124,8 @@ def do_update(
     envvar="HOST",
     type=str,
     required=True,
-    help="Host to create/update within the specified Domain (eg: mylab).",
+    multiple=True,
+    help="Host(s) to create/update within the specified Domain (eg: mylab, *.home).",
 )
 @click.option(
     "-t",
@@ -166,7 +170,7 @@ def do_update(
 def main(
     ctx: click.Context,
     domain: str,
-    host: str,
+    host: List[str],
     token: str,
     interval: int,
     ipv6: bool,

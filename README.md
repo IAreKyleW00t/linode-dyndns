@@ -2,7 +2,11 @@
 
 A Python tool for dynamically updating Linode Domain Records with your current IP address. Inspired by [nvllsvm/linode-dynamic-dns](https://github.com/nvllsvm/linode-dynamic-dns) but now utilizes the official [linode_api4](https://github.com/linode/linode_api4-python) package for Python.
 
-Available on: [GitHub](https://github.com/IAreKyleW00t/linode-dyndns) | [DockerHub](https://hub.docker.com/r/iarekylew00t/linode-dyndns) | [PyPi](https://pypi.org/project/linode-dyndns/)
+[![PyPI version](https://badge.fury.io/py/linode-dyndns.svg)](https://badge.fury.io/py/linode-dyndns)
+[![PyPI downloads](https://img.shields.io/pypi/dm/linode-dyndns)](https://img.shields.io/pypi/dm/linode-dyndns)
+
+[![Docker Hub](https://img.shields.io/badge/Docker%20Hub-iarekylew00t%2Flinode--dyndns-blue)](https://hub.docker.com/r/iarekylew00t/linode-dyndns)
+[![Docker Pulls](https://img.shields.io/docker/pulls/iarekylew00t/linode-dyndns.svg)](https://hub.docker.com/r/iarekylew00t/linode-dyndns)
 
 ## Installation
 
@@ -21,6 +25,8 @@ docker pull iarekylew00t/linode-dyndns
 ## Usage
 
 Full usage and defaults can be found using the `--help` flag. Each option has a matching env variable associated with it which can be set instead of setting flags on the cli tool itself, see the [Environment variables](#Environment-variables) section.
+
+Multiple hosts can be specified by passing multiple `--host` flags, or if using the `HOST` env variable then separate each host by space.
 
 When running the tool in a loop (`--interval` flag), if for some reason the tool cannot get your IP during a run, it will skip it and retry during the next interval.
 
